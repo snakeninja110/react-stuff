@@ -63,7 +63,6 @@ export default class List extends Component {
   }
 
   componentWillMount () {
-
     this.pullDownRefreshObj = this.state.pullDownRefresh ? {
       threshold: this.state.pullDownRefreshThreshold,
       stop: this.state.pullDownRefreshStop
