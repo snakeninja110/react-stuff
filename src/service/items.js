@@ -34,7 +34,7 @@ export default class ItemsService {
           newPage.push(`new ${type} ${++this.itemIndex}`);
         }
         resolve(newPage);
-      }, 2000);
+      }, 1000);
     });
   }
 }
