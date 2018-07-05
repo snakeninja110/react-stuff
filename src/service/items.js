@@ -2,26 +2,39 @@ export default class ItemsService {
 
   constructor() { 
     this.count = 12;
-    this.list = [];
+    // this.list = [];
     this.itemIndex = 0
   }
 
   /**
    * 假装自己是数据接口
+   * 模拟接口
    */
-
-  getItems() {
-    for (let i = 0; i < this.count; i++) {
-      this.list.push(`line ${++this.itemIndex}`);
-    }
-    return this.list;
+  getItems(type) {
+    this.itemIndex = 0;
+    let list = [];
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        for (let i = 0; i < this.count; i++) {
+          list.push(`${type} line ${++this.itemIndex}`);
+        }
+        resolve(list);
+      }, 1000);
+    });
   }
 
-  getMoreItems() {
+  /**
+   * 模拟获取新数据
+   */
+  getMoreItems(type) {
     let newPage = [];
-    for (let i = 0; i < 5; i++) {
-      newPage.push(`new Line ${++this.itemIndex}`);
-    }
-    return newPage;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        for (let i = 0; i < 5; i++) {
+          newPage.push(`new ${type} ${++this.itemIndex}`);
+        }
+        resolve(newPage);
+      }, 2000);
+    });
   }
 }

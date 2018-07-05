@@ -1,3 +1,7 @@
+/**
+ * better-scroll 参数用法请参考官方文档
+ * https://ustbhuangyi.github.io/better-scroll/doc/zh-hans/options-advanced.html
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import BScroll from 'better-scroll';
@@ -56,6 +60,10 @@ export default class Scroll extends Component {
     }
   }
 
+  componentWillUnmount () {
+    this.destroy();
+  }
+
   _initScroll() {
     // 初始化BScroll
     if (!this.wrapper) {
@@ -102,7 +110,6 @@ export default class Scroll extends Component {
 
   _initPullUpLoad = () => {
     this.scroll.on('pullingUp', () => {
-      // （测试用）没有更多数据时也能上拉，故注释此段
       // if (!this.state.pullUpDirty) {
       //   return;
       // }
@@ -157,6 +164,7 @@ export default class Scroll extends Component {
     });
   }
 
+  // 下拉完成后，bubble回到初始位置并刷新scroll
   _afterPullDown = () => {
     setTimeout(() => {
       this.setState({
@@ -168,11 +176,11 @@ export default class Scroll extends Component {
     }, this.scroll.options.bounceTime);
   }
 
-  enable = () => {
+  enable = () => { // 开启scroll
     this.scroll && this.scroll.enable();
   }
 
-  disable = () => {
+  disable = () => { // 关闭scroll
     this.scroll && this.scroll.disable();
   }
 
@@ -195,7 +203,8 @@ export default class Scroll extends Component {
   forceUpdate = (dirty) => {
     if (this.props.pullDownRefresh && this.state.isPullingDown) {
       this.setState({
-        pulling: false
+        pulling: false,
+        pullUpDirty: dirty // 这里是否要重置请根据实际项目微调
       })
       this._reboundPullDown().then(() => {
         this._afterPullDown();
@@ -213,7 +222,7 @@ export default class Scroll extends Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { data, children } = this.props;
 
     let pullupDom = null;
     if (!this.state.isPullUpLoad) {
@@ -234,9 +243,11 @@ export default class Scroll extends Component {
       <div className="scroll-wrapper" ref={(el) => this.wrapper = el}>
         <div className="scroll-content" ref={(el) => this.listWrapper = el}>
           { children }
-          <div className="pullup-wrapper">
-            { pullupDom }
-          </div>
+          { data && data.length > 0 &&
+            <div className="pullup-wrapper">
+              { pullupDom }
+            </div>
+          }
         </div>
         <div className="pulldown-wrapper" style={{top: this.state.pullDownStyle}}>
           { this.state.beforePullDown && 
